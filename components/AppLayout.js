@@ -1,30 +1,56 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Link from 'next/link';
-import { Layout, Menu } from 'antd';
-import { UnorderedListOutlined } from '@ant-design/icons';
+import { Row, Col, Input, Image } from 'antd';
+import { MonitorOutlined } from '@ant-design/icons';
 
+const wrapper = {
+    padding : '15px'
+}
 
-const { Header, Footer, Content } = Layout;
-const { SubMenu } = Menu;
+const searchInputWrapper = {
+    verticalAlign : 'middle',
+    paddingTop : '5px',
+}
+
+const searchInput = {
+    borderRadius: '20px',
+    paddingLeft : '20px'
+}
+
+const { Search } = Input;
+
+const suffix = (
+    <MonitorOutlined
+      style={{
+        fontSize: 16,
+        color: '#1890ff',
+        paddingRight : '5px'
+      }}
+    />
+  );
+
+const onSearch = value => console.log(value);
 
 const AppLayout = ({ children }) => {
     return (
         <>
-            <Layout>
-                <Menu mode='horizontal'>
-                        <Menu.Item key="home">
-                            <Link href="/"><a>바이리뷰</a></Link>
-                        </Menu.Item>
-                        <Menu.Item key="profile">
-                            <Link href="/profile"><a>프로필</a></Link>
-                        </Menu.Item>
-                        <Menu.Item key="signup">
-                            <Link href="/signup"><a>회원가입</a></Link>
-                        </Menu.Item>
-                </Menu>
-                    {children}
-            </Layout>
+            <Row style={wrapper}>
+                <Col xs={6} md={12}>
+                    <Image
+                        width={55}
+                        src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+                    />
+                </Col>
+                <Col xs={18} md={12}
+                    style={searchInputWrapper}
+                >
+                    <Input allowClear onSearch={onSearch} size='large'    
+                    suffix={suffix} 
+                    style={searchInput}
+                    />
+                </Col>
+            </Row>
+            {children}
         </>
     )
 };
