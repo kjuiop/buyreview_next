@@ -6,6 +6,8 @@ import propTypes from 'prop-types';
 
 import GlobalStyle from '../components/GlobalStyle';
 
+import storeWrapper from '../store/configureStore';
+
 const App = ({ Component }) => {
     return (
         <>
@@ -24,4 +26,4 @@ App.propTypes = {
     Component: propTypes.elementType.isRequired,
 }
 
-export default App;
+export default storeWrapper.withRedux(App);

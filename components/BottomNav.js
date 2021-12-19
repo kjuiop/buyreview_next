@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Link from 'next/link';
 import { Row, Col, Affix } from 'antd';
+import { useSelector } from 'react-redux';
 
-import { ArrowRightOutlined, CommentOutlined, UserOutlined, BarsOutlined } from '@ant-design/icons';
+import { RedditOutlined, ArrowRightOutlined, CommentOutlined, UserOutlined, BarsOutlined } from '@ant-design/icons';
 
 const wrapper = {
+    weight: '100%',
     height: '70px',
     backgroundColor: 'white',
 };
@@ -13,9 +15,9 @@ const wrapper = {
 const navWrapper = {
     flexDirection: 'column',
     verticalAlign: 'middle',
-    textAlign : 'center',
-    padding : '15px',
-    fontSize : '12px'
+    textAlign: 'center',
+    padding: '15px',
+    fontSize: '12px'
 };
 
 const colorBlack = {
@@ -23,25 +25,43 @@ const colorBlack = {
 };
 
 const iconFontSize = {
-    fontSize : '20px'
+    fontSize: '20px'
 };
 
 const BottomNavBar = ({ }) => {
+
+    // const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+    
+
     return (
         <>
             <Affix offsetBottom={0}
-                onChange={affixed => console.log(affixed)}
             >
                 <Row
                     style={wrapper}
                 >
                     <Col xs={6}>
-                        <div style={navWrapper}>
-                            <div>
-                                <ArrowRightOutlined style={iconFontSize} />
-                            </div>
-                            <Link href="/login"><a style={colorBlack}>로그인</a></Link>
-                        </div>
+                        {isLoggedIn
+                            ?
+                            <>
+                                <div style={navWrapper}>
+                                    <div>
+                                        <RedditOutlined style={iconFontSize} />
+                                    </div>
+                                    <Link href="/login"><a style={colorBlack}>내 켐페인</a></Link>
+                                </div>
+                            </>
+                            :
+                            <>
+                                <div style={navWrapper}>
+                                    <div>
+                                        <ArrowRightOutlined style={iconFontSize} />
+                                    </div>
+                                    <Link href="/login"><a style={colorBlack}>로그인</a></Link>
+                                </div>
+                            </>
+                        }
                     </Col>
                     <Col xs={6}>
                         <div style={navWrapper}>
@@ -71,8 +91,8 @@ const BottomNavBar = ({ }) => {
                     </Col>
                 </Row>
             </Affix >
-        </> 
-    ) 
-}; 
+        </>
+    )
+};
 
 export default BottomNavBar; 

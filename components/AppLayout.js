@@ -29,8 +29,6 @@ const suffix = (
     />
   );
 
-const onSearch = value => console.log(value);
-
 const AppLayout = ({ children }) => {
     return (
         <>
@@ -44,7 +42,7 @@ const AppLayout = ({ children }) => {
                 <Col xs={18} md={12}
                     style={searchInputWrapper}
                 >
-                    <Input allowClear onSearch={onSearch} size='large'    
+                    <Input allowClear size='large'    
                     suffix={suffix} 
                     style={searchInput}
                     />
