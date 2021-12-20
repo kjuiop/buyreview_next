@@ -53,7 +53,7 @@ const loginForm = ({ }) => {
     const onSubmitForm = useCallback(() => {
         console.log(username, password);
         dispatch(loginAction(username, password));
-        location.href = '/';
+        // location.href = '/';
     }, [username, password]);
 
     return (

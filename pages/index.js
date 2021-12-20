@@ -8,6 +8,10 @@ import { Row, Col, Divider, Card } from 'antd';
 
 import CategoryBar from '../components/CategoryBar';
 import ItemCard from '../components/ItemCard';
+import { useSelector } from 'react-redux';
+
+import PostForm from '../components/PostForm';
+import PostCard from '../components/PostCard';
 
 const { Meta } = Card;
 
@@ -24,7 +28,8 @@ const divierMargin = {
 }
 
 const Home = () => {
-
+    const { isLoggedIn } = useSelector((state) => state.user);
+    const { mainPosts } = useSelector((state) => state.post);
     return (
         <AppLayout>
             <TopNavBar />
@@ -38,7 +43,9 @@ const Home = () => {
                 </Col>
             </Row>
             <Divider style={divierMargin} />
-            <ItemCard />
+            {/* <ItemCard /> */}
+            {isLoggedIn && <PostForm />}
+            {mainPosts.map((post) => <PostCard key={post.id} post={post} />)}
             <BottomNavBar />
         </AppLayout>
     );
