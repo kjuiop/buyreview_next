@@ -2,8 +2,11 @@ import React, { useCallback, useState } from 'react';
 import { Form, Input, PageHeader, Radio, Button, Checkbox, Divider } from 'antd';
 import styled from 'styled-components';
 import useInput from '../hooks/useInput';
-
+import { useRouter } from 'next/router';
 import LogoLayout from '../components/LogoLayout';
+import { loginAction } from '../reducers/user';
+import { useDispatch } from "react-redux";
+
 
 const errorText = {
     color : 'red'
@@ -19,6 +22,9 @@ const submitButton = {
 }
 
 const Signup = () => {
+
+    const dispatch = useDispatch();
+    const router = useRouter();
 
     const [username, onChangeUsername] = useInput('');
     const [password, onChangePassword] = useInput('');
@@ -60,7 +66,8 @@ const Signup = () => {
         }
 
         console.log(username, password, name, gender, birth, term, marketing);
-
+        dispatch(loginAction(username, password));
+        router.push('/');
 
     }, [password, passwordCheck, term]);
 

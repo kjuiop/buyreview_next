@@ -4,6 +4,7 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons'
 import PropTypes from 'prop-types';
 
 import useInput from '../hooks/useInput';
+import { useRouter } from 'next/router';
 
 import { useDispatch } from "react-redux";
 import { loginAction } from '../reducers/user';
@@ -46,6 +47,7 @@ const boldText = {
 const loginForm = ({ }) => {
 
     const dispatch = useDispatch();
+    const router = useRouter();
 
     const [username, onChangeUsername] = useInput('');
     const [password, onChangePassword] = useInput('');
@@ -54,6 +56,7 @@ const loginForm = ({ }) => {
         console.log(username, password);
         dispatch(loginAction(username, password));
         // location.href = '/';
+        router.push('/');
     }, [username, password]);
 
     return (
