@@ -1,14 +1,60 @@
 import React, { useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
+import { PlusOutlined } from '@ant-design/icons';
 
 
 const PostImages = ({images}) => {
 
-    return (
-        <>
-            구현중
-        </>
-    )
+    const [showImagesZoom, setShowImagesZoom] = useState(false);
+    
+    const onZoom = useCallback(() => {
+        setShowImageZoom(true);
+    }, [])
+
+    if (images.length === 1) {
+        return (
+            <>
+                <img src={images[0].src} alt={images[0].src}
+                    onClick={onZoom} role="presentation" style={{ maxHeight: '200px' }}
+                />
+            </>
+        )
+    }
+
+    if (images.length === 2) {
+        return(
+            <>
+            <div>
+                <img src={images[0].src} alt={images[0].src}
+                    onClick={onZoom} role="presentation" style={{width:"50%"}}
+                />
+                <img src={images[1].src} alt={images[1].src}
+                    onClick={onZoom} role="presentation" style={{width:"50%"}}
+                />
+            </div>
+            </>
+        )
+    }
+
+    if (images.length >= 3) {
+        return (
+            <>
+                <div>
+                    <img src={images[0].src} alt={images[0].src} onClick={onZoom} role="presentation" width='50%'/>
+                    <div
+                        role="presentation"
+                        style={{ display: 'inline-block', width: '50%', textAlign: 'center', verticalAlign: 'middle'}}
+                        onClick={onZoom}
+                    >
+                        <PlusOutlined />
+                        <br />
+                        {images.length - 1}
+                        개의 사진 더보기
+                    </div>
+                </div>
+            </>
+        )
+    }
 
 }
 
