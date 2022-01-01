@@ -6,8 +6,8 @@ import PropTypes from 'prop-types';
 import useInput from '../hooks/useInput';
 import { useRouter } from 'next/router';
 
-import { useDispatch } from "react-redux";
-import { loginAction } from '../reducers/user';
+import { useDispatch, useSelector } from "react-redux";
+import { loginRequestAction } from '../reducers/user';
 
 
 const wrapper = {
@@ -49,12 +49,17 @@ const loginForm = ({ }) => {
     const dispatch = useDispatch();
     const router = useRouter();
 
+    const { isLoggingIn } = useSelector((state) => state.user)
     const [username, onChangeUsername] = useInput('');
     const [password, onChangePassword] = useInput('');
 
     const onSubmitForm = useCallback(() => {
         console.log(username, password);
-        dispatch(loginAction(username, password));
+        const me = {
+            username: username,
+            password: password,
+        }
+        dispatch(loginRequestAction(me));
         // location.href = '/';
         router.push('/');
     }, [username, password]);
@@ -122,7 +127,7 @@ const loginForm = ({ }) => {
                                         <Button
                                             type="primary"
                                             htmlType="submit"
-                                            loading={false}
+                                            loading={isLoggingIn}
                                             style={loginButton}
                                         >
                                             Log in
