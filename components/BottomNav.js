@@ -31,7 +31,7 @@ const iconFontSize = {
 const BottomNavBar = ({ }) => {
 
     // const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+    const { logInDone } = useSelector((state) => state.user);
     
 
     return (
@@ -42,7 +42,7 @@ const BottomNavBar = ({ }) => {
                     style={wrapper}
                 >
                     <Col xs={6}>
-                        {isLoggedIn
+                        {logInDone
                             ?
                             <>
                                 <div style={navWrapper}>

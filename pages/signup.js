@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import useInput from '../hooks/useInput';
 import { useRouter } from 'next/router';
 import LogoLayout from '../components/LogoLayout';
-import { loginAction } from '../reducers/user';
-import { useDispatch } from "react-redux";
+import { SIGN_UP_REQUEST } from '../reducers/user';
+import { useDispatch, useSelector } from "react-redux";
 
 
 const errorText = {
@@ -24,6 +24,7 @@ const submitButton = {
 const Signup = () => {
 
     const dispatch = useDispatch();
+    const { signUpLoading } = useSelector((state) => state.user);
     const router = useRouter();
 
     const [username, onChangeUsername] = useInput('');
@@ -65,8 +66,18 @@ const Signup = () => {
             return setTermError(true);
         }
 
-        console.log(username, password, name, gender, birth, term, marketing);
-        dispatch(loginAction(username, password));
+        const param = {
+            username : username,
+            password : password,
+            name : name,
+            gender : gender,
+            birth : birth,
+            term : term,
+            marketing : marketing,
+        }
+
+        console.log(param);
+        dispatch(SIGN_UP_REQUEST(param));
         router.push('/');
 
     }, [password, passwordCheck, term]);
@@ -102,7 +113,7 @@ const Signup = () => {
                         },
                     ]}
                 >
-                    <Input type="text" name="username" value={username} required onChange={onChangeUsername}/>
+                    <Input type="email" name="username" value={username} required onChange={onChangeUsername}/>
                 </Form.Item>
 
                 <Form.Item
@@ -208,7 +219,7 @@ const Signup = () => {
                 <Form.Item>
                     <Button type="primary"
                         htmlType="submit"
-                        loading={false}
+                        loading={signUpLoading}
                         style={submitButton}
                     >
                         회원가입

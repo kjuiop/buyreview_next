@@ -49,7 +49,7 @@ const loginForm = ({ }) => {
     const dispatch = useDispatch();
     const router = useRouter();
 
-    const { isLoggingIn } = useSelector((state) => state.user)
+    const { logInLoading } = useSelector((state) => state.user)
     const [username, onChangeUsername] = useInput('');
     const [password, onChangePassword] = useInput('');
 
@@ -100,7 +100,9 @@ const loginForm = ({ }) => {
                                         onChange={onChangeUsername}
                                         rules={[{ required: true, message: 'Please input your Username!' }]}
                                     >
-                                        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="이메일 주소" />
+                                        <Input type="email" 
+                                               prefix={<UserOutlined 
+                                               className="site-form-item-icon" />} placeholder="이메일 주소" />
                                     </Form.Item>
                                     <Form.Item
                                         name="password"
@@ -127,7 +129,7 @@ const loginForm = ({ }) => {
                                         <Button
                                             type="primary"
                                             htmlType="submit"
-                                            loading={isLoggingIn}
+                                            loading={logInLoading}
                                             style={loginButton}
                                         >
                                             Log in

@@ -28,7 +28,7 @@ const divierMargin = {
 }
 
 const Home = () => {
-    const { isLoggedIn } = useSelector((state) => state.user);
+    const { me } = useSelector((state) => state.user);
     const { mainPosts } = useSelector((state) => state.post);
     return (
         <AppLayout>
@@ -44,7 +44,7 @@ const Home = () => {
             </Row>
             <Divider style={divierMargin} />
             {/* <ItemCard /> */}
-            {isLoggedIn && <PostForm />}
+            {me && <PostForm />}
             {mainPosts.map((post) => <PostCard key={post.id} post={post} />)}
             <BottomNavBar />
         </AppLayout>
