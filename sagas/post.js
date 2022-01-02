@@ -35,6 +35,7 @@ function addCommentAPI(data) {
 function* addComment(action) {
 
     try {
+        console.log("addComment SAGA");
         // const result = yield call(addCommentAPI, action.data);
         yield delay(1000);
         yield put({

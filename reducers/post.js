@@ -1,9 +1,13 @@
+import shortId from "shortid";
+import faker from "faker";
+import shortid from "shortid";
+
 export const initialState = {
     mainPosts: [{
-        id: 1,
+        id: shortId.generate(),
         content: '첫번째 게시글 #해시태그 #익스프레스',
         User: {
-            id: 1,
+            id: 2,
             nickname: '제로초'
         },
         Images: [{
@@ -57,7 +61,7 @@ export const addComment = (data) => ({
 });
 
 const dummyPost = (data) => ({
-    id: 2,
+    id: shortId.generate(),
     content: data,
     User: {
         id: 1,
@@ -69,6 +73,15 @@ const dummyPost = (data) => ({
     commentDone: false,
     commentError: null,
 });
+
+const dummyComment = (data) => ({
+    id: shortId.generate(),
+    content : data,
+    User: {
+        id: 1,
+        nickname: '제이크'
+    }
+})
 
 const reducer = (state = initialState, action) => {
     console.log("ADD_POST_REDUCER");
@@ -101,9 +114,16 @@ const reducer = (state = initialState, action) => {
             commentError: null,
             };
         case ADD_COMMENT_SUCCESS:
+            console.log("ADD_COMMENT_SUCCESS REDUCER");
+
+            const postIndex = state.mainPosts.findIndex((y) => y.id === action.data.postId);
+            const post = { ...state.mainPosts[postIndex] };
+            post.Comments = [dummyComment(action.data.content), ...post.Comments];
+            const mainPosts = [...state.mainPosts];
+            mainPosts[postIndex] = post;
             return {
                 ...state,
-                mainPosts: [dummyPost, ...state.mainPosts],
+                mainPosts,
                 commentLoading: false,
                 commentDone: true,
             };   
