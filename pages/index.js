@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import AppLayout from '../components/AppLayout';
 import TopNavBar from '../components/TopNav';
@@ -8,10 +8,11 @@ import { Row, Col, Divider, Card } from 'antd';
 
 import CategoryBar from '../components/CategoryBar';
 import ItemCard from '../components/ItemCard';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import PostForm from '../components/PostForm';
 import PostCard from '../components/PostCard';
+import { LOAD_POSTS_REQUEST } from '../reducers/post';
 
 const { Meta } = Card;
 
@@ -28,8 +29,35 @@ const divierMargin = {
 }
 
 const Home = () => {
+    const dispatch = useDispatch();
     const { me } = useSelector((state) => state.user);
-    const { mainPosts } = useSelector((state) => state.post);
+    const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector((state) => state.post);
+
+    useEffect(() => {
+        dispatch({
+            type: LOAD_POSTS_REQUEST,
+        });
+    }, []);
+
+    useEffect(() => {
+        function onScroll() {
+            // console.log(window.scrollY, document.documentElement.clientHeight, document.documentElement.scrollHeight);
+            
+            if (window.scrollY + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
+                console.log("hasMorePost", hasMorePosts);
+                if (hasMorePosts && !loadPostsLoading) {
+                    dispatch({
+                        type: LOAD_POSTS_REQUEST,
+                    })
+                }
+            }
+        }
+        window.addEventListener('scroll', onScroll);
+        return () => {
+            window.removeEventListener('scroll', onScroll);
+        };
+    }, [hasMorePosts, loadPostsLoading])
+
     return (
         <AppLayout>
             <TopNavBar />
