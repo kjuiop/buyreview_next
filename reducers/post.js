@@ -1,4 +1,5 @@
 import shortId from "shortid";
+import produce from 'immer';
 import faker from "faker";
 import shortid from "shortid";
 
@@ -11,23 +12,28 @@ export const initialState = {
             nickname: '제로초'
         },
         Images: [{
+            id: shortId.generate(),
             src: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg'
         }, 
         {
+            id: shortId.generate(),
             src: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg'
         }, 
         {
+            id: shortId.generate(),
             src: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg'
         }
         ],
         Comments: [
             {
                 User: {
+                    id: shortId.generate(),
                     nickname: 'nero'
                 },
                 content: '우와 개정판이 나왔냐오'
             }, {
                 User: {
+                    id: shortId.generate(),
                     nickname: 'hoho'
                 },
                 content: 'ㅎㅎㅎㅎ 진짜루우?'
@@ -37,6 +43,9 @@ export const initialState = {
     addPostLoading: false,
     addPostDone: false,
     addPostError: null,
+    removePostLoading: false,
+    removePostDone: false,
+    removePostError: null,
     addCommentLoading: false,
     addCommentDone: false,
     addCommentError: null,
@@ -45,6 +54,10 @@ export const initialState = {
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';
 export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS';
 export const ADD_POST_FAILURE = 'ADD_POST_FAILURE';
+
+export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST';
+export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS';
+export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE';
 
 export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST';
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS';
@@ -61,8 +74,8 @@ export const addComment = (data) => ({
 });
 
 const dummyPost = (data) => ({
-    id: shortId.generate(),
-    content: data,
+    id: data.id,
+    content: data.content,
     User: {
         id: 1,
         nickname: '제로초'
@@ -83,59 +96,129 @@ const dummyComment = (data) => ({
     }
 })
 
-const reducer = (state = initialState, action) => {
+// 리듀서란 이전 상태를 액션을 통해 다음 상태로 만들어내는 함수
+// 불변성은 지키면서
+const reducer = (state = initialState, action) => produce(state, (draft) => {
     console.log("ADD_POST_REDUCER");
     switch (action.type) {
         case ADD_POST_REQUEST:
-            return {
-                ...state,
-                addPostLoading: true,
-                addPostDone: false,
-                addPostError: null,
-            };
+            draft.addPostLoading = true;
+            draft.addPostDone = false;
+            draft.addPostError = null;
+            break;
         case ADD_POST_SUCCESS:
-            return {
-                ...state,
-                mainPosts: [dummyPost(action.data), ...state.mainPosts],
-                addPostLoading: false,
-                addPostDone: true,
-            };   
+            draft.addPostLoading = false;
+            draft.addPostDone = true;
+            draft.mainPosts.unshift(dummyPost(action.data));
+            break;
         case ADD_POST_FAILURE:
-            return {
-            ...state,
-            addPostLoading: false,
-            addPostError: action.error,
-            };
+            draft.addPostLoading = false;
+            draft.addPostError = action.error;
+            break;
+        case REMOVE_POST_REQUEST:
+            draft.removePostLoading = true;
+            draft.removePostDone = false;
+            draft.removePostError = null;
+            break;
+        case REMOVE_POST_SUCCESS:
+            draft.removePostLoading = false;
+            draft.removePostDone = true;
+            draft.mainPosts = draft.mainPosts.filter((y) => y.id !== action.data);
+            break;
+        case REMOVE_POST_FAILURE:
+            draft.removePostLoading = false;
+            draft.removePostError = action.error;
+            break;
         case ADD_COMMENT_REQUEST:
-            return {
-            ...state,
-            commentLoading: true,
-            commentDone: false,
-            commentError: null,
-            };
+            draft.commentLoading = true;
+            draft.commentDone = false;
+            draft.commentError = null;
+            break;
         case ADD_COMMENT_SUCCESS:
             console.log("ADD_COMMENT_SUCCESS REDUCER");
-
-            const postIndex = state.mainPosts.findIndex((y) => y.id === action.data.postId);
-            const post = { ...state.mainPosts[postIndex] };
-            post.Comments = [dummyComment(action.data.content), ...post.Comments];
-            const mainPosts = [...state.mainPosts];
-            mainPosts[postIndex] = post;
-            return {
-                ...state,
-                mainPosts,
-                commentLoading: false,
-                commentDone: true,
-            };   
+            const post = draft.mainPosts.find((y) => y.id === action.data.postId);
+            post.Comments.unshift(dummyComment(action.data.content));
+            draft.addCommentLoading = false;
+            draft.addCommentDone = true;
+            break;  
         case ADD_COMMENT_FAILURE:
-            return {
-            ...state,
-            commentLoading: false,
-            commentError: action.error,
-            };
+            draft.commentLoading = false;
+            draft.commentError = action.error;
+            break;
         default:
-            return state;
+            break;
     }
-};
+    // switch (action.type) {
+    //     case ADD_POST_REQUEST:
+    //         return {
+    //             ...state,
+    //             addPostLoading: true,
+    //             addPostDone: false,
+    //             addPostError: null,
+    //         };
+    //     case ADD_POST_SUCCESS:
+    //         return {
+    //             ...state,
+    //             mainPosts: [dummyPost(action.data), ...state.mainPosts],
+    //             addPostLoading: false,
+    //             addPostDone: true,
+    //         };   
+    //     case ADD_POST_FAILURE:
+    //         return {
+    //         ...state,
+    //         addPostLoading: false,
+    //         addPostError: action.error,
+    //         };
+    //     case ADD_COMMENT_REQUEST:
+    //         return {
+    //         ...state,
+    //         commentLoading: true,
+    //         commentDone: false,
+    //         commentError: null,
+    //         };
+    //     case ADD_COMMENT_SUCCESS:
+    //         console.log("ADD_COMMENT_SUCCESS REDUCER");
+
+    //         const postIndex = state.mainPosts.findIndex((y) => y.id === action.data.postId);
+    //         const post = { ...state.mainPosts[postIndex] };
+    //         post.Comments = [dummyComment(action.data.content), ...post.Comments];
+    //         const mainPosts = [...state.mainPosts];
+    //         mainPosts[postIndex] = post;
+    //         return {
+    //             ...state,
+    //             mainPosts,
+    //             commentLoading: false,
+    //             commentDone: true,
+    //         };   
+    //     case ADD_COMMENT_FAILURE:
+    //         return {
+    //         ...state,
+    //         commentLoading: false,
+    //         commentError: action.error,
+    //         };
+    //     case REMOVE_POST_REQUEST:
+    //         return {
+    //             ...state,
+    //             removePostLoading: true,
+    //             removePostDone: false,
+    //             removePostError: null,
+    //         };
+    //     case REMOVE_POST_SUCCESS:
+    //         return {
+    //             ...state,
+    //             mainPosts: state.mainPosts.filter((y) => y.id !== action.data),
+    //             removePostLoading: false,
+    //             removePostDone: true,
+    //         };   
+    //     case REMOVE_POST_FAILURE:
+    //         return {
+    //         ...state,
+    //         removePostLoading: false,
+    //         removePostError: action.error,
+    //         };
+    //     default:
+    //         return state;
+    // }
+});
 
 export default reducer;
